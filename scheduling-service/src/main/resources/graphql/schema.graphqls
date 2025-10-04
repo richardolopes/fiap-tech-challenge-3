@@ -1,0 +1,63 @@
+# Schema GraphQL para o Sistema Hospitalar
+
+type Query {
+    # Usuários
+    users: [User!]!
+    user(id: ID!): User
+
+    # Consultas
+    consultations: [Consultation!]!
+    consultation(id: ID!): Consultation
+    patientConsultations(patientId: ID!): [Consultation!]!
+
+    # Histórico e consultas flexíveis do paciente
+    patientHistory(patientId: ID!): [Consultation!]!
+    patientUpcomingConsultations(patientId: ID!): [Consultation!]!
+    patientConsultationsByStatus(patientId: ID!, status: ConsultationStatus!): [Consultation!]!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    userType: UserType!
+    crm: String
+    coren: String
+    cpf: String
+    active: Boolean!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Consultation {
+    id: ID!
+    patientId: ID!
+    doctorId: ID!
+    scheduledDateTime: String!
+    actualStartTime: String
+    actualEndTime: String
+    status: ConsultationStatus!
+    notes: String
+    symptoms: String
+    diagnosis: String
+    prescription: String
+    createdAt: String!
+    updatedAt: String!
+
+    # Dados desnormalizados para facilitar exibição
+    patientName: String
+    patientEmail: String
+    doctorName: String
+}
+
+enum UserType {
+    MEDICO
+    ENFERMEIRO
+    PACIENTE
+}
+
+enum ConsultationStatus {
+    AGENDADA
+    CONCLUIDA
+    CANCELADA
+}

@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "a2f41dab-3d7d-4f6a-bada-e6f486ec2a64",
+		"name": "Tech Challenge 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10962187"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"email\": \"guilherme@mail.com\",\r\n//     \"password\": \"olamundo\"\r\n// }\r\n\r\n{\r\n    \"email\": \"julia@mail.com\",\r\n    \"password\": \"olamundo\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"name\":\"Guilherme de Oliveira Vicente\",\r\n//     \"email\": \"guilherme@mail.com\",\r\n//     \"password\": \"olamundo\",\r\n//     \"userType\": \"MEDICO\",\r\n//     \"crm\": \"123456789\"\r\n// }\r\n\r\n{\r\n    \"name\":\"Júlia Schlindwein\",\r\n    \"email\": \"julia@mail.com\",\r\n    \"password\": \"olamundo\",\r\n    \"cpf\": \"123456789\",\r\n    \"userType\": \"PACIENTE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Consultation",
+			"item": [
+				{
+					"name": "Create appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NTAzNDcsImV4cCI6MTc1OTU2ODM0N30.liZ62HagGrhVzYoAnrvK-I2dg1LBFF7LoSAdcQvPbTpu9pQ9yYGp95lpMkx5iBChaxRGnRc5W3glMzStWYGe7Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patientId\": 1,\r\n    \"doctorId\": 2,\r\n    \"scheduledDateTime\": \"2025-10-05T22:40:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/consultations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"consultations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NTIyNjYsImV4cCI6MTc1OTU3MDI2Nn0.MQzUgjqncPkNJx6m2S-T0NvUCYhhhbdnYbQuOgE-AAk_dqtaQJ3au9F1qoRvvoYM_0JPJ78TirwaC7-wxzkstg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/consultations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"consultations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NDI0ODYsImV4cCI6MTc1OTU2MDQ4Nn0.jaStMqCdjSwTPtPGRgE-xgQ-x6CouYiIklSoUOhplpDRKOm4wQbFaBo3wCAcGBxJarrEdq4RBbhZfASyHZi60A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/consultations/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"consultations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NDI0ODYsImV4cCI6MTc1OTU2MDQ4Nn0.jaStMqCdjSwTPtPGRgE-xgQ-x6CouYiIklSoUOhplpDRKOm4wQbFaBo3wCAcGBxJarrEdq4RBbhZfASyHZi60A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patientId\": 2,\r\n    \"doctorId\": 1,\r\n    \"scheduledDateTime\": \"2025-12-30T12:10:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/consultations/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"consultations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NTA2NDMsImV4cCI6MTc1OTU2ODY0M30.uWFRQZ9TPK5aNX3SzS1U_4txg1LWDXZJ0FwBXBG6FCxV6yuxrZg8BRl6bPfOY1FTn7n5hLIkBqxZR8pWyanrig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/consultations/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"consultations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get appointment by pacient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdWxpYUBtYWlsLmNvbSIsImlhdCI6MTc1OTU1MDQ1MywiZXhwIjoxNzU5NTY4NDUzfQ.0vZhdAqfFvo94YSZZ4J1m8QF1R6_4M4j0dQsMDRe9PF-xBT4Yug985t3oz9Ea6eIDJJqZcgUXzmgQG7BvlZQ1A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/consultations/patient/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"consultations",
+								"patient",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NDI0ODYsImV4cCI6MTc1OTU2MDQ4Nn0.jaStMqCdjSwTPtPGRgE-xgQ-x6CouYiIklSoUOhplpDRKOm4wQbFaBo3wCAcGBxJarrEdq4RBbhZfASyHZi60A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NDI0ODYsImV4cCI6MTc1OTU2MDQ4Nn0.jaStMqCdjSwTPtPGRgE-xgQ-x6CouYiIklSoUOhplpDRKOm4wQbFaBo3wCAcGBxJarrEdq4RBbhZfASyHZi60A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GraphQL",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWlsaGVybWVAbWFpbC5jb20iLCJpYXQiOjE3NTk1NTI1NDQsImV4cCI6MTc1OTU3MDU0NH0.V1qqLhhCho5lRhbA-dWrA-YcxRGlPYvEDWMW1RI5Yl1ML_y-Cnv6wYTbd5K0igvLJhOVHpqKHEZ6Zp9zPIaDsA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"query\": \"query { users { id email } }\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
