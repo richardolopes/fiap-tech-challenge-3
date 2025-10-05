@@ -105,96 +105,8 @@ O projeto está organizado seguindo os princípios da Clean Architecture:
 
 Para testar as funcionalidades de notificação e eventos assíncronos, configure o Kafka:
 
-#### 1. Instalação do Kafka
-
-**Opção A - Download Manual:**
-```bash
-# Baixar Kafka
-wget https://downloads.apache.org/kafka/2.13-3.6.0/kafka_2.13-3.6.0.tgz
-tar -xzf kafka_2.13-3.6.0.tgz
-cd kafka_2.13-3.6.0
-
-# Terminal 1 - Zookeeper
-bin/zookeeper-server-start.sh config/zookeeper.properties
-
-# Terminal 2 - Kafka
-bin/kafka-server-start.sh config/server.properties
-```
-
-**Opção B - Docker (Recomendado):**
-```bash
-# Criar docker-compose.yml
-cat > docker-compose.yml << 'EOF'
-version: '3.8'
-services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
-
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-EOF
-
 # Iniciar serviços
 docker-compose up -d
-```
-
-#### 2. Criar Tópicos (Opcional - Criação Automática Habilitada)
-
-```bash
-# Criar tópico manualmente (se necessário)
-bin/kafka-topics.sh --create \
-  --topic consultation-events \
-  --bootstrap-server localhost:9092 \
-  --partitions 3 \
-  --replication-factor 1
-
-# Listar tópicos
-bin/kafka-topics.sh --list --bootstrap-server localhost:9092
-
-# Verificar detalhes do tópico
-bin/kafka-topics.sh --describe \
-  --topic consultation-events \
-  --bootstrap-server localhost:9092
-```
-
-#### 3. Testando o Kafka
-
-**Verificar Status:**
-```bash
-curl http://localhost:8080/api/kafka/status
-```
-
-**Enviar Evento de Teste:**
-```bash
-curl -X POST http://localhost:8080/api/kafka/test-event
-```
-
-**Monitorar Mensagens (Consumer Console):**
-```bash
-# Terminal separado - Monitorar eventos
-bin/kafka-console-consumer.sh \
-  --topic consultation-events \
-  --bootstrap-server localhost:9092 \
-  --from-beginning \
-  --formatter kafka.tools.DefaultMessageFormatter \
-  --property print.key=true \
-  --property print.value=true
-```
 
 #### 4. Configurações do Kafka no Sistema
 
@@ -239,60 +151,9 @@ curl -X POST http://localhost:8080/api/consultations \
 
 #### 7. Monitoramento e Logs
 
-Verifique os logs da aplicação para ver os eventos sendo processados:
-```bash
-# Logs mostrarão:
-# 📧 NOTIFICAÇÃO PARA PACIENTE: carlos@email.com
-# 📋 Assunto: Consulta agendada
-# 💬 Mensagem: Sua consulta com Dr. Joao foi agendada para 2025-09-02T14:30:00
-```
-
-#### 8. Configuração Avançada
-
-Para produção, considere estas configurações no `application.properties`:
-
-```properties
-# Kafka Configurações de Produção
-spring.kafka.producer.acks=all
-spring.kafka.producer.retries=2147483647
-spring.kafka.producer.max-in-flight-requests-per-connection=5
-spring.kafka.producer.enable-idempotence=true
-spring.kafka.producer.compression-type=snappy
-
-spring.kafka.consumer.enable-auto-commit=false
-spring.kafka.listener.ack-mode=manual_immediate
-spring.kafka.consumer.max-poll-records=500
-spring.kafka.consumer.session-timeout-ms=30000
-```
-
-#### 9. Troubleshooting Kafka
-
-**Problema: Kafka não conecta**
-```bash
-# Verificar se Kafka está rodando
-docker ps
-# ou
-jps | grep Kafka
-
-# Verificar portas
-netstat -an | grep 9092
-```
-
-**Problema: Tópico não existe**
-```bash
-# Criar tópico manualmente
-bin/kafka-topics.sh --create --topic consultation-events --bootstrap-server localhost:9092
-```
-
-**Problema: Eventos não são consumidos**
-```bash
-# Verificar grupo de consumidores
-bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
-bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group scheduling-service
-```
+Verifique os logs da aplicação para ver os eventos sendo processados.
 
 ## Endpoints da API
-# API Endpoints
 
 ## Autenticação
 
@@ -318,7 +179,6 @@ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --grou
 | `PUT` | `/api/consultations/{id}` | Atualizar consulta |
 | `DELETE` | `/api/consultations/{id}` | Cancelar consulta |
 | `GET` | `/api/consultations/patient/{patientId}` | Listar consultas de um paciente |
-| `GET` | `/api/consultations/doctor/{doctorId}` | Listar consultas de um médico |
 
 
 ## Exemplos de Uso com curl
@@ -430,7 +290,7 @@ curl -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   http://localhost:8080/api/consultations/1
 ```
 
-#### 10. Atualizar Consulta (apenas médicos)
+#### 10. Atualizar Consulta
 ```bash
 curl -X PUT http://localhost:8080/api/consultations/1 \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
@@ -452,12 +312,6 @@ curl -X DELETE http://localhost:8080/api/consultations/1 \
 ```bash
 curl -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   http://localhost:8080/api/consultations/patient/3
-```
-
-#### 13. Listar Consultas por Médico
-```bash
-curl -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  http://localhost:8080/api/consultations/doctor/1
 ```
 
 ### 🗄️ Banco de Dados H2
@@ -515,44 +369,6 @@ curl -X DELETE http://localhost:8080/api/consultations/1 \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-### 🔄 Fluxo de Teste Alternativo (Windows PowerShell)
-
-Para usuários do Windows PowerShell, use esta sintaxe:
-
-```powershell
-# 1. Registrar médico
-$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/register" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"name": "Dr. Joao", "email": "joao@hospital.com", "password": "123456", "userType": "MEDICO", "crm": "CRM12345"}'
-
-# 2. Fazer login
-$loginResponse = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"email": "joao@hospital.com", "password": "123456"}'
-
-# 3. Extrair token
-$token = $loginResponse.token
-
-# 4. Listar usuários
-$headers = @{ "Authorization" = "Bearer $token" }
-$users = Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Headers $headers
-
-# 5. Criar consulta
-$consultationData = @{
-  patientId = 2
-  doctorId = 1
-  scheduledDateTime = "2025-09-02T14:30:00"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/consultations" `
-  -Method POST `
-  -Headers $headers `
-  -ContentType "application/json" `
-  -Body $consultationData
-```
-
 ### ⚠️ Observações Importantes
 
 - **Substitua `SEU_TOKEN_AQUI`** pelo token JWT retornado no login
@@ -563,111 +379,10 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/consultations" `
 
 ### 🔐 Controle de Acesso por Tipo de Usuário
 
-#### Endpoints acessíveis por MÉDICOS:
-- ✅ Todas as operações de consulta (criar, listar, atualizar, cancelar)
-- ✅ Ver consultas de qualquer paciente/médico
-- ✅ Atualizar consultas (exclusivo)
-
-#### Endpoints acessíveis por ENFERMEIROS:
-- ✅ Criar e cancelar consultas
-- ✅ Listar todas as consultas
-- ✅ Ver consultas de qualquer paciente/médico
-- ❌ Atualizar consultas (apenas médicos)
-
-#### Endpoints acessíveis por PACIENTES:
-- ✅ Ver suas próprias consultas
-- ✅ Listar consultas (filtro futuro para suas próprias)
-- ❌ Criar, atualizar ou cancelar consultas
-
-### 🧪 Testando Diferentes Perfis
-
-```bash
-# Registrar usuários de diferentes tipos
-curl -X POST http://localhost:8080/api/auth/register -H "Content-Type: application/json" \
-  -d '{"name": "Dr. Ana", "email": "ana@hospital.com", "password": "123456", "userType": "MEDICO", "crm": "CRM67890"}'
-
-curl -X POST http://localhost:8080/api/auth/register -H "Content-Type: application/json" \
-  -d '{"name": "Enfermeira Rosa", "email": "rosa@hospital.com", "password": "123456", "userType": "ENFERMEIRO", "coren": "COREN12345"}'
-
-curl -X POST http://localhost:8080/api/auth/register -H "Content-Type: application/json" \
-  -d '{"name": "Paciente José", "email": "jose@email.com", "password": "123456", "userType": "PACIENTE", "cpf": "98765432100"}'
-
-# Testar login com enfermeiro
-NURSE_TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "rosa@hospital.com", "password": "123456"}' | jq -r '.token')
-
-# Enfermeiro pode criar consulta
-curl -X POST http://localhost:8080/api/consultations \
-  -H "Authorization: Bearer $NURSE_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"patientId": 4, "doctorId": 1, "scheduledDateTime": "2025-09-03T10:00:00"}'
-
-# Testar login com paciente
-PATIENT_TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "jose@email.com", "password": "123456"}' | jq -r '.token')
-
 # Paciente pode ver suas consultas
 curl -H "Authorization: Bearer $PATIENT_TOKEN" \
   http://localhost:8080/api/consultations/patient/4
-```
 
-## 🌐 Acessando pelo Navegador
-
-### URLs Diretas (sem autenticação)
-- **Página Inicial:** http://localhost:8080
-- **Informações da API:** http://localhost:8080/api/info  
-- **Console do Banco H2:** http://localhost:8080/h2-console
-
-### Interface Web
-A página inicial (http://localhost:8080) fornece:
-- Status da aplicação
-- Lista de endpoints disponíveis
-- Instruções de uso
-- Links úteis para desenvolvimento
-
-### ⚠️ Evitando Erros de JWT
-Se você tentar acessar endpoints protegidos diretamente pelo navegador, receberá erro 401 (Unauthorized). Use:
-- **APIs públicas:** `/`, `/api/info`, `/h2-console`, `/api/auth/*`
-- **Para APIs protegidas:** Use ferramentas como curl, Postman ou inclua o header `Authorization: Bearer TOKEN`
-
-## 🔍 Testes de Validação e Erros
-
-### Testando Validações de Entrada
-
-```bash
-# 1. Tentativa de criar consulta sem token (401 Unauthorized)
-curl -X POST http://localhost:8080/api/consultations \
-  -H "Content-Type: application/json" \
-  -d '{"patientId": 1, "doctorId": 1, "scheduledDateTime": "2025-09-02T14:30:00"}'
-
-# 2. Tentativa de criar consulta com data no passado (400 Bad Request)
-curl -X POST http://localhost:8080/api/consultations \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -H "Content-Type: application/json" \
-  -d '{"patientId": 1, "doctorId": 1, "scheduledDateTime": "2023-01-01T14:30:00"}'
-
-# 3. Tentativa de criar consulta com IDs inválidos (400 Bad Request)
-curl -X POST http://localhost:8080/api/consultations \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -H "Content-Type: application/json" \
-  -d '{"patientId": 999, "doctorId": 999, "scheduledDateTime": "2025-09-02T14:30:00"}'
-
-# 4. Paciente tentando criar consulta (403 Forbidden)
-curl -X POST http://localhost:8080/api/consultations \
-  -H "Authorization: Bearer TOKEN_DO_PACIENTE" \
-  -H "Content-Type: application/json" \
-  -d '{"patientId": 1, "doctorId": 1, "scheduledDateTime": "2025-09-02T14:30:00"}'
-
-# 5. Enfermeiro tentando atualizar consulta (403 Forbidden)
-curl -X PUT http://localhost:8080/api/consultations/1 \
-  -H "Authorization: Bearer TOKEN_DO_ENFERMEIRO" \
-  -H "Content-Type: application/json" \
-  -d '{"patientId": 1, "doctorId": 1, "scheduledDateTime": "2025-09-02T15:00:00"}'
-```
-
-### Respostas de Erro Esperadas
 
 #### 400 Bad Request
 ```json
@@ -791,97 +506,3 @@ SELECT * FROM consultations
 WHERE patient_id = 2 
 ORDER BY scheduled_date_time DESC;
 ```
-
-## Próximos Passos
-
-1. ✅ **Implementar o serviço de notificações**
-2. ✅ **Adicionar endpoints GraphQL**  
-3. ✅ **Configurar integração com Kafka**
-4. 🔄 **Adicionar testes de integração**
-5. 🔄 **Configurar banco de dados PostgreSQL para produção**
-6. 🔄 **Implementar cache com Redis**
-7. 🔄 **Adicionar monitoramento com Prometheus**
-8. 🔄 **Configurar CI/CD**
-
-## 🛠️ Troubleshooting
-
-### Problemas Comuns
-
-#### Erro 401 - Token Inválido
-```bash
-# Verificar se o token não expirou (válido por 5 horas)
-# Fazer novo login para obter token atualizado
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "seu@email.com", "password": "suasenha"}'
-```
-
-#### Aplicação não inicia na porta 8080
-```bash
-# Verificar se a porta está ocupada
-netstat -ano | findstr :8080
-
-# Ou alterar a porta no application.properties
-echo "server.port=8081" >> scheduling-service/src/main/resources/application.properties
-```
-
-#### Erro de conexão com banco H2
-```bash
-# Limpar e recompilar o projeto
-mvn clean install
-cd scheduling-service
-mvn spring-boot:run
-```
-
-### Ferramentas Úteis
-
-#### Postman Collection
-Para importar no Postman, crie uma collection com estas variáveis:
-- `baseUrl`: `http://localhost:8080`
-- `token`: `Bearer SEU_TOKEN_AQUI`
-
-#### VS Code Extensions Recomendadas
-- **REST Client**: Para testar APIs direto no editor
-- **Thunder Client**: Cliente REST integrado
-- **Database Client**: Para visualizar dados do H2
-
-#### Script de Teste Rápido (.http file)
-```http
-### Registrar médico
-POST http://localhost:8080/api/auth/register
-Content-Type: application/json
-
-{
-  "name": "Dr. Teste",
-  "email": "teste@hospital.com", 
-  "password": "123456",
-  "userType": "MEDICO",
-  "crm": "CRM999"
-}
-
-### Login
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "teste@hospital.com",
-  "password": "123456"
-}
-
-### Listar usuários
-GET http://localhost:8080/api/users
-Authorization: Bearer {{token}}
-```
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-1. Verifique os logs da aplicação no terminal
-2. Consulte a documentação no H2 Console
-3. Teste os endpoints com curl ou Postman
-4. Verifique as validações de entrada de dados
-
----
-
-**Sistema Hospitalar - Clean Architecture com Spring Boot** 🏥  
-*Desenvolvido com Java 21, Spring Security, GraphQL e Kafka*

@@ -20,13 +20,6 @@ Este documento contém todos os comandos curl necessários para testar completam
 cd /home/guilherme/tech_challenge3/final/fiap-tech-challenge-3
 docker compose up -d
 ```
-
-### Aguardar Inicialização
-```bash
-sleep 15
-echo "Sistema pronto para testes"
-```
-
 ---
 
 ## 🔐 Autenticação e Registro
@@ -310,32 +303,9 @@ curl -X GET http://localhost:8080/api/consultations/patient/2 \
 ```
 **Resultado Esperado:** Status 200, lista consultas do Pedro
 
-### 7. Consultas - Por Médico
+### 7. Atualização de Consultas
 
-#### 7.1 Médico acessando suas próprias consultas ✅
-```bash
-curl -X GET http://localhost:8080/api/consultations/doctor/1 \
-  -H "Authorization: Bearer TOKEN_CARLOS"
-```
-**Resultado Esperado:** Status 200, lista consultas do Dr. Carlos
-
-#### 7.2 Enfermeira acessando consultas de qualquer médico ✅
-```bash
-curl -X GET http://localhost:8080/api/consultations/doctor/3 \
-  -H "Authorization: Bearer TOKEN_ANA"
-```
-**Resultado Esperado:** Status 200, lista consultas da Dr. Maria
-
-#### 7.3 Paciente tentando acessar consultas por médico ❌
-```bash
-curl -X GET http://localhost:8080/api/consultations/doctor/1 \
-  -H "Authorization: Bearer TOKEN_PEDRO"
-```
-**Resultado Esperado:** Status 403 Forbidden
-
-### 8. Atualização de Consultas
-
-#### 8.1 Médico atualizando consulta ✅
+#### 7.1 Médico atualizando consulta ✅
 ```bash
 curl -X PUT http://localhost:8080/api/consultations/1 \
   -H "Content-Type: application/json" \
@@ -349,7 +319,7 @@ curl -X PUT http://localhost:8080/api/consultations/1 \
 ```
 **Resultado Esperado:** Status 200, consulta atualizada
 
-#### 8.2 Enfermeira atualizando consulta ✅
+#### 7.2 Enfermeira atualizando consulta ✅
 ```bash
 curl -X PUT http://localhost:8080/api/consultations/3 \
   -H "Content-Type: application/json" \
@@ -363,7 +333,7 @@ curl -X PUT http://localhost:8080/api/consultations/3 \
 ```
 **Resultado Esperado:** Status 200, consulta atualizada
 
-#### 8.3 Paciente tentando atualizar consulta ❌
+#### 7.3 Paciente tentando atualizar consulta ❌
 ```bash
 curl -X PUT http://localhost:8080/api/consultations/1 \
   -H "Content-Type: application/json" \
@@ -377,9 +347,9 @@ curl -X PUT http://localhost:8080/api/consultations/1 \
 ```
 **Resultado Esperado:** Status 403 Forbidden
 
-### 9. Cancelamento de Consultas
+### 8. Cancelamento de Consultas
 
-#### 9.1 Médico cancelando consulta ✅
+#### 8.1 Médico cancelando consulta ✅
 ```bash
 curl -X DELETE http://localhost:8080/api/consultations/2 \
   -H "Content-Type: application/json" \
@@ -390,7 +360,7 @@ curl -X DELETE http://localhost:8080/api/consultations/2 \
 ```
 **Resultado Esperado:** Status 204 No Content
 
-#### 9.2 Enfermeira cancelando consulta ✅
+#### 8.2 Enfermeira cancelando consulta ✅
 ```bash
 curl -X DELETE http://localhost:8080/api/consultations/3 \
   -H "Content-Type: application/json" \
@@ -401,7 +371,7 @@ curl -X DELETE http://localhost:8080/api/consultations/3 \
 ```
 **Resultado Esperado:** Status 204 No Content
 
-#### 9.3 Paciente tentando cancelar consulta ❌
+#### 8.3 Paciente tentando cancelar consulta ❌
 ```bash
 curl -X DELETE http://localhost:8080/api/consultations/1 \
   -H "Content-Type: application/json" \
@@ -412,23 +382,23 @@ curl -X DELETE http://localhost:8080/api/consultations/1 \
 ```
 **Resultado Esperado:** Status 403 Forbidden
 
-### 10. Usuários - Listagem
+### 9. Usuários - Listagem
 
-#### 10.1 Médico listando usuários ✅
+#### 9.1 Médico listando usuários ✅
 ```bash
 curl -X GET http://localhost:8080/api/users \
   -H "Authorization: Bearer TOKEN_CARLOS"
 ```
 **Resultado Esperado:** Status 200, lista todos os usuários
 
-#### 10.2 Enfermeira listando usuários ✅
+#### 9.2 Enfermeira listando usuários ✅
 ```bash
 curl -X GET http://localhost:8080/api/users \
   -H "Authorization: Bearer TOKEN_ANA"
 ```
 **Resultado Esperado:** Status 200, lista todos os usuários
 
-#### 10.3 Paciente tentando listar usuários ❌
+#### 9.3 Paciente tentando listar usuários ❌
 ```bash
 curl -X GET http://localhost:8080/api/users \
   -H "Authorization: Bearer TOKEN_PEDRO"
@@ -439,9 +409,9 @@ curl -X GET http://localhost:8080/api/users \
 
 ## 🔍 Testes GraphQL
 
-### 11. GraphQL - Consultas Básicas
+### 10. GraphQL - Consultas Básicas
 
-#### 11.1 Teste de conectividade GraphQL
+#### 10.1 Teste de conectividade GraphQL
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -450,9 +420,9 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** `{"data":{"hello":"Hello from Hospital GraphQL API!"}}`
 
-### 12. GraphQL - Consultas de Usuários
+### 11. GraphQL - Consultas de Usuários
 
-#### 12.1 Médico consultando lista de usuários ✅
+#### 11.1 Médico consultando lista de usuários ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -463,7 +433,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Lista todos os usuários
 
-#### 12.2 Enfermeira consultando lista de usuários ✅
+#### 11.2 Enfermeira consultando lista de usuários ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -474,7 +444,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Lista todos os usuários
 
-#### 12.3 Paciente tentando consultar lista de usuários ❌
+#### 11.3 Paciente tentando consultar lista de usuários ❌
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -485,9 +455,9 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** `{"errors":[{"message":"Forbidden"}]}`
 
-### 13. GraphQL - Consultas Médicas
+### 12. GraphQL - Consultas Médicas
 
-#### 13.1 Médico consultando suas consultas ✅
+#### 12.1 Médico consultando suas consultas ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -498,7 +468,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Lista consultas do Dr. Carlos
 
-#### 13.2 Enfermeira consultando consultas de médico ✅
+#### 12.2 Enfermeira consultando consultas de médico ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -509,7 +479,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Lista consultas da Dr. Maria
 
-#### 13.3 Paciente tentando consultar consultas de médico ❌
+#### 12.3 Paciente tentando consultar consultas de médico ❌
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -520,9 +490,9 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** `{"errors":[{"message":"Forbidden"}]}`
 
-### 14. GraphQL - Histórico do Paciente
+### 13. GraphQL - Histórico do Paciente
 
-#### 14.1 Pedro consultando seu próprio histórico ✅
+#### 13.1 Pedro consultando seu próprio histórico ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -533,7 +503,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Lista consultas do Pedro
 
-#### 14.2 Médico consultando histórico de qualquer paciente ✅
+#### 13.2 Médico consultando histórico de qualquer paciente ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -544,7 +514,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Lista consultas da Julia
 
-#### 14.3 Pedro tentando acessar histórico de outro paciente ❌
+#### 13.3 Pedro tentando acessar histórico de outro paciente ❌
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -555,9 +525,9 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** `{"errors":[{"message":"Forbidden"}]}`
 
-### 15. GraphQL - Consultas Flexíveis
+### 14. GraphQL - Consultas Flexíveis
 
-#### 15.1 Múltiplas queries em uma requisição ✅
+#### 14.1 Múltiplas queries em uma requisição ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -568,7 +538,7 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Múltiplas respostas em uma requisição
 
-#### 15.2 Campos específicos selecionados ✅
+#### 14.2 Campos específicos selecionados ✅
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -583,23 +553,23 @@ curl -X POST http://localhost:8080/graphql \
 
 ## 🛡️ Testes de Segurança
 
-### 16. Testes de Autorização Cross-Patient
+### 15. Testes de Autorização Cross-Patient
 
-#### 16.1 Julia tentando acessar dados do Pedro ❌
+#### 15.1 Julia tentando acessar dados do Pedro ❌
 ```bash
 curl -X GET http://localhost:8080/api/consultations/patient/2 \
   -H "Authorization: Bearer TOKEN_JULIA"
 ```
 **Resultado Esperado:** Status 403 Forbidden
 
-#### 16.2 Julia tentando acessar consulta específica do Pedro ❌
+#### 15.2 Julia tentando acessar consulta específica do Pedro ❌
 ```bash
 curl -X GET http://localhost:8080/api/consultations/1 \
   -H "Authorization: Bearer TOKEN_JULIA"
 ```
 **Resultado Esperado:** Status 403 Forbidden
 
-#### 16.3 Julia tentando acessar dados do Pedro via GraphQL ❌
+#### 15.3 Julia tentando acessar dados do Pedro via GraphQL ❌
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -610,15 +580,15 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** `{"errors":[{"message":"Forbidden"}]}`
 
-### 17. Testes sem Autenticação
+### 16. Testes sem Autenticação
 
-#### 17.1 Tentativa de acesso sem token ❌
+#### 16.1 Tentativa de acesso sem token ❌
 ```bash
 curl -X GET http://localhost:8080/api/consultations
 ```
 **Resultado Esperado:** Status 401 Unauthorized
 
-#### 17.2 Tentativa GraphQL sem token ❌
+#### 16.2 Tentativa GraphQL sem token ❌
 ```bash
 curl -X POST http://localhost:8080/graphql \
   -H "Content-Type: application/json" \
@@ -626,16 +596,16 @@ curl -X POST http://localhost:8080/graphql \
 ```
 **Resultado Esperado:** Status 401 Unauthorized
 
-### 18. Testes com Token Inválido
+### 17. Testes com Token Inválido
 
-#### 18.1 Token malformado ❌
+#### 17.1 Token malformado ❌
 ```bash
 curl -X GET http://localhost:8080/api/consultations \
   -H "Authorization: Bearer token_invalido_123"
 ```
 **Resultado Esperado:** Status 401 Unauthorized
 
-#### 18.2 Token expirado (simulado) ❌
+#### 17.2 Token expirado (simulado) ❌
 ```bash
 curl -X GET http://localhost:8080/api/consultations \
   -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZUBleGFtcGxlLmNvbSIsImlhdCI6MTUwMDAwMDAwMCwiZXhwIjoxNTAwMDAwMDAwfQ.invalid"
@@ -655,7 +625,6 @@ curl -X GET http://localhost:8080/api/consultations \
 | REST | MÉDICO | Criar consulta | `POST /api/consultations` |
 | REST | MÉDICO | Atualizar consulta | `PUT /api/consultations/{id}` |
 | REST | MÉDICO | Cancelar consulta | `DELETE /api/consultations/{id}` |
-| REST | MÉDICO | Ver consultas por médico | `GET /api/consultations/doctor/{id}` |
 | REST | MÉDICO | Ver consultas por paciente | `GET /api/consultations/patient/{id}` |
 | REST | MÉDICO | Listar usuários | `GET /api/users` |
 | REST | ENFERMEIRO | Listar todas consultas | `GET /api/consultations` |
@@ -676,7 +645,6 @@ curl -X GET http://localhost:8080/api/consultations \
 | REST | PACIENTE | Criar consulta | `POST /api/consultations` |
 | REST | PACIENTE | Atualizar consulta | `PUT /api/consultations/{id}` |
 | REST | PACIENTE | Cancelar consulta | `DELETE /api/consultations/{id}` |
-| REST | PACIENTE | Ver consultas por médico | `GET /api/consultations/doctor/{id}` |
 | REST | PACIENTE | Ver consultas de outro paciente | `GET /api/consultations/patient/{outro_id}` |
 | REST | PACIENTE | Listar usuários | `GET /api/users` |
 | GraphQL | PACIENTE | Queries restritas | `users`, `doctorConsultations` |
@@ -711,4 +679,3 @@ Este guia cobre **100% dos endpoints** e **funcionalidades de segurança** do si
 - ✅ **Autorização**: Controle por tipo de usuário
 - ✅ **Histórico Flexível**: Consultas médicas completas
 
-**O sistema está pronto para produção! 🎉**

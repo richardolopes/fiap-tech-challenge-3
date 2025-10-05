@@ -30,11 +30,6 @@ public class QueryResolver {
     }
 
     @QueryMapping
-    public String hello() {
-        return "Hello from Hospital GraphQL API!";
-    }
-
-    @QueryMapping
     @PreAuthorize("hasAuthority('ROLE_MEDICO') or hasAuthority('ROLE_ENFERMEIRO')")
     public List<UserResponse> users() {
         List<User> users = userRepository.findActiveUsers();
